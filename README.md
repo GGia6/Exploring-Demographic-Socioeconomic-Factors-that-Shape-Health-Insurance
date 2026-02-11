@@ -37,7 +37,12 @@ These methods are implemented within interactive Shiny applications to allow use
 - Live app:  https://giannnag.shinyapps.io/CountyComparison/
 
 ### Tableau Visualizations
-- Multiple Tableau dashboards visualizing trends and disparities in health insurance coverage across demographic and economic groups
+- Multiple Tableau dashboards visualizing trends and disparities in health insurance coverage for this project is published on Tableau Public.
+
+   **View the interactive dashboard here:**  
+[https://public.tableau.com/views/Book2_17646147602230/Plot2?:language=en-US&:sid=&:redirect=auth&:display_count=n&:origin=viz_share_link]
+
+Screenshots available in the `/screenshots` folder.
 
 ### RPubs Report
 - Full written analysis combining results from the Shiny apps and Tableau dashboards  
