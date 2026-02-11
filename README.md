@@ -32,9 +32,9 @@ These methods are implemented within interactive Shiny applications to allow use
 
 ### Shiny Applications
 - **Shiny App 1:** Two interactive complementary views, allowing users to investigate the rates at which people are uninsured in neighboring counties.
-  Live app:  https://giannnag.shinyapps.io/NYNJ_InsuranceModeling/
+- Live app:  https://giannnag.shinyapps.io/NYNJ_InsuranceModeling/
 - **Shiny App 2:** Regression-based analysis allowing users to examine unique predictors of insurance outcomes
-  Live app:  https://giannnag.shinyapps.io/CountyComparison/
+- Live app:  https://giannnag.shinyapps.io/CountyComparison/
 
 ### Tableau Visualizations
 - Multiple Tableau dashboards visualizing trends and disparities in health insurance coverage across demographic and economic groups
@@ -48,9 +48,4 @@ These methods are implemented within interactive Shiny applications to allow use
 
 ---
 
-## How to Run the Shiny Apps Locally
-1. Clone this repository
-2. Open the project in RStudio
-3. Install required packages:
-   ```r
-   install.packages(c("shiny", "tidyverse", "ggplot2"))
+
