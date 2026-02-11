@@ -1,0 +1,165 @@
+##R All of the R code used for the markdown with the exclusion of the text elements. Organized by visualization type. 
+
+##Correlation plots 
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+library(dplyr)
+library(tidyverse)
+library(ggplot2)
+library(reshape2)
+project <- read.csv("da5.csv", header = TRUE)
+
+project <-rename(project,
+       Mean.Income = Median.household.income..dollars.,
+       Mean.SSI = Mean.Social.Security.income..dollars.,
+       Covered = Health.Insurance.Coverage,
+       Not.Covered = No.Health.Insurance.Coverage
+       )
+
+
+
+
+```
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+library(dplyr)
+library(stringr)
+
+data <- project %>%
+  mutate(
+    County = case_when(
+      str_detect(County, regex("new york", ignore_case = TRUE)) ~ "NY",
+      str_detect(County, regex("new jersey", ignore_case = TRUE)) ~ "NJ",
+      TRUE ~ NA_character_
+    )
+  )
+data_ny <- data %>% filter(County == "NY")
+data_nj <- data %>% filter(County == "NJ")
+
+period<- data_nj%>% 
+  select(Mean.Income,
+         Covered,
+         Not.Covered,
+         Female,
+         Male,
+         Employed,
+         Unemployed,
+         Total.population)
+
+period2<- data_ny%>% 
+  select(Mean.Income,
+         Covered,
+         Not.Covered,
+         Female,
+         Male,
+         Employed,
+         Unemployed,
+         Total.population)
+
+
+cormat <- round(cor(period), 2)
+cormat2 <- round(cor(period2), 2)
+
+
+plot1<-ggplot(melt(cormat2), aes(Var1, Var2, fill = value)) +
+  geom_tile() +
+  scale_fill_gradient2(
+    low = "grey",
+    mid = "pink",
+    high ="blue"
+  ) +
+  theme_minimal() +
+  labs(title = "Correlation Heatmap of Demographic & Economic Indicators in NY")
+plot1
+
+plot2<-ggplot(melt(cormat), aes(Var1, Var2, fill = value)) +
+  geom_tile() +
+  scale_fill_gradient2(
+    low = "grey",
+    mid = "pink",
+    high ="blue"
+  ) +
+  theme_minimal() +
+  labs(title = "Correlation Heatmap of Demographic & Economic Indicators in NJ")
+plot2
+
+```
+
+/><param name='language' value='en-US' /></object></div>                
+```{js, echo = FALSE}
+var divElement = document.getElementById('viz1764627122065');                    
+var vizElement = divElement.getElementsByTagName('object')[0];                    
+if ( divElement.offsetWidth > 800 ) { vizElement.style.minWidth='1000px';vizElement.style.maxWidth='100%';vizElement.style.minHeight='850px';vizElement.style.maxHeight=(divElement.offsetWidth*0.75)+'px';} else if ( divElement.offsetWidth > 500 ) { vizElement.style.minWidth='1000px';vizElement.style.maxWidth='100%';vizElement.style.minHeight='850px';vizElement.style.maxHeight=(divElement.offsetWidth*0.75)+'px';} else { vizElement.style.width='100%';vizElement.style.minHeight='1200px';vizElement.style.maxHeight=(divElement.offsetWidth*1.77)+'px';}                     var scriptElement = document.createElement('script');                    scriptElement.src = 'https://public.tableau.com/javascripts/api/viz_v1.js';                    vizElement.parentNode.insertBefore(scriptElement, vizElement);                     
+```
+
+##Employment and Coverage rates plots
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+
+
+project$Employment.Rate <- project$Employed / (project$Employed + project$Unemployed)
+project$CoverageRate   <- project$Covered/ (project$Employed + project$Unemployed)
+
+ggplot(project, aes(x = Employment.Rate, y = CoverageRate)) +
+  geom_point(size = 3, color = "steelblue", alpha = 0.8) +
+  geom_smooth(method = "lm", se = FALSE, color = "black", linewidth = 1) +
+  labs(
+    title = "Employment Rate vs Health Insurance Coverage",
+    subtitle = "Each point represents a New York or New Jersey county",
+    x = "Employment Rate",
+    y = "Coverage Rate"
+  ) +
+  theme_minimal(base_size = 14)
+
+ggplot(project, aes(x = Unemployment.Rate, y = CoverageRate)) +
+  geom_point(size = 3, color = "steelblue", alpha = 0.8) +
+  geom_smooth(method = "lm", se = FALSE, color = "black", linewidth = 1) +
+  labs(
+    title = "Unemployment Rate vs Health Insurance Coverage",
+    subtitle = "Each point represents a New York or New Jersey county",
+    x = "Unemployment Rate",
+    y = "Coverage Rate"
+  ) +
+  theme_minimal(base_size = 14)
+```
+##RAce distribution by coverage example 
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+library(gganimate)
+library(gifski)
+
+
+df2 <- project %>%
+  mutate(CoverageRate = CoverageRate,
+    BlackRate = ifelse(Race.Type == "Black or African American",
+                       Uninsured.rate/Total.population, NA)
+  ) %>%
+  filter(!is.na(BlackRate)) %>%
+  arrange(BlackRate) %>%
+  mutate(Order = row_number())
+
+p_black <- ggplot(df2, aes(x = Order, y = CoverageRate)) +
+  geom_line(color = "steelblue", linewidth = 1.2) +
+  geom_point(color = "darkred", size = 3) +
+  labs(
+    title = "Insurance Coverage as Black Population Increases",
+    subtitle = "Animating counties arranged by % Black population",
+    x = "Counties (ordered by % Black population)",
+    y = "Coverage Rate"
+  ) +
+  theme_minimal(base_size = 14) +
+  transition_reveal(Order)
+
+
+
+p_black
+
+
+
+```
+## Inputting tableau graphs  into document 
+```{js, echo= FALSE}                    
+var divElement = document.getElementById('viz1764627687564');                    var vizElement = divElement.getElementsByTagName('object')[0];                    vizElement.style.width='100%';vizElement.style.height=(divElement.offsetWidth*0.75)+'px';                    var scriptElement = document.createElement('script');                    scriptElement.src = 'https://public.tableau.com/javascripts/api/viz_v1.js';                    vizElement.parentNode.insertBefore(scriptElement, vizElement);               
+```
+
+```{js, echo = FALSE}                  
+var divElement = document.getElementById('viz1765213544473'); var vizElement = divElement.getElementsByTagName('object')[0];                    vizElement.style.width='100%';vizElement.style.height=(divElement.offsetWidth*0.75)+'px';                    var scriptElement = document.createElement('script');                    scriptElement.src = 'https://public.tableau.com/javascripts/api/viz_v1.js';                    vizElement.parentNode.insertBefore(scriptElement, vizElement);                
+```
